@@ -5,6 +5,10 @@ import HomeScreen from './src/screens/HomeScreen';
 import PushNotification from 'react-native-push-notification';
 import {useEffect} from 'react';
 import {Platform, PermissionsAndroid} from 'react-native';
+import 'react-native-gesture-handler';
+import {createStackNavigator} from '@react-navigation/stack';
+import {NavigationContainer} from '@react-navigation/native';
+import Maps from './src/screens/Maps';
 
 const App = () => {
   useEffect(() => {
@@ -18,41 +22,21 @@ const App = () => {
     });
   };
 
-  const requestNotificationPermission = async () => {
-    if (Platform.OS === 'android') {
-      try {
-        // PermissionsAndroid.check('android.permission.POST_NOTIFICATIONS')
-        //   .then(response => {
-        //     if (!response) {
-              PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-                {
-                  title: 'Notification',
-                  message:
-                    'App needs access to your notification ' +
-                    'so you can get Updates',
-                  buttonNeutral: 'Ask Me Later',
-                  buttonNegative: 'Cancel',
-                  buttonPositive: 'OK',
-                },
-          //     );
-          //   }
-          // }
-        )
-          // .catch(err => {
-          //   console.log('Notification Error=====>', err);
-          // });
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  };
+  
+  const Stack = createStackNavigator();
 
   return (
     <Provider store={Store}>
-      <HomeScreen
-        requestNotificationPermission={requestNotificationPermission}
-      />
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="HomeScreen"
+          screenOptions={{
+            headerShown: false,
+          }}>
+          <Stack.Screen name="HomeScreen" component={HomeScreen} />
+          <Stack.Screen name="Maps" component={Maps} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </Provider>
   );
 };

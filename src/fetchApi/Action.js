@@ -1,5 +1,5 @@
 export const GET_CITIES = 'GET_CITIES';
-const API_URL = 'https://mocki.io/v1/8d170be5-3ff2-4afe-b0ba-dbda2b3aa63e';
+const API_URL = 'https://mocki.io/v1/e3666b82-49e0-4014-a519-953c937d286f';
 export const getCities = () => {
     try {
         return async dispatch => {

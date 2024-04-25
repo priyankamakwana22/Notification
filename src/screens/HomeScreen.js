@@ -3,25 +3,60 @@ import {getCities} from '../fetchApi/Action';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
 import PushNotification from 'react-native-push-notification';
+import {useRoute} from '@react-navigation/native';
 
-const HomeScreen = (props) => {
+const HomeScreen = ({navigation}) => {
   const {cities} = useSelector(state => state.fetchReducer);
   const dispatch = useDispatch();
+  
 
   useEffect(() => {
     dispatch(getCities());
   }, []);
 
+  // getting notification
   const handleNotification = item => {
-    props.requestNotificationPermission();
+    requestNotificationPermission();
     console.log('item', item);
     PushNotification.localNotification({
       channelId: 'test-channel',
-      title: 'You clicked on ' +item.country,
+      title: 'You clicked on ' + item.country,
       message: item.city,
       vibrate: true,
     });
   };
+
+  // getting a request for modal for allowing notification
+  const requestNotificationPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        // PermissionsAndroid.check('android.permission.POST_NOTIFICATIONS')
+        //   .then(response => {
+        //     if (!response) {
+        PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+          {
+            title: 'Notification',
+            message:
+              'App needs access to your notification ' +
+              'so you can get Updates',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+          //     );
+          //   }
+          // }
+        );
+        // .catch(err => {
+        //   console.log('Notification Error=====>', err);
+        // });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
 
   return (
     <View>
@@ -31,7 +66,8 @@ const HomeScreen = (props) => {
         renderItem={({item}) => (
           <TouchableOpacity
             onPress={() => {
-              handleNotification(item);
+              // handleNotification(item);
+              navigation.navigate('Maps', {city : item.city, lat: item.lat, lng : item.lng});
             }}
             style={styles.main}>
             <View>
